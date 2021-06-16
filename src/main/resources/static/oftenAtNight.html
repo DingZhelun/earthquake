@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Earthquake Information</title>
+    <!--根据自己的项目目录修改-->
+    <link rel="stylesheet" href="layui/css/layui.css" media="all"/>
+</head>
+<body>
+<!--头部-->
+<div style="margin: 10px 0 10px 1%;width: 99%">
+    <h1>Zhelun Ding 1001888813</h1>
+</div>
+
+<div style="margin: 10px 0 10px 1%;width: 99%">
+    <div style="display: table-cell">
+        <form class="layui-form" id="search_form">
+            <div class="layui-input-block" style="display: table-cell">
+                <!--            <label>&emsp;接&emsp;口&emsp;</label>-->
+                <div class="layui-input-inline" style="width: 260px">
+                    <p> magnitude greater than:</p>
+                    <input type="text" name="mag" placeholder="" id="mag"
+                           autocomplete="off" class="layui-input">
+                    <p id="count"></p>
+                </div>
+            </div>
+
+            <div style="display: table-cell">
+                <button id="search" class="layui-btn layui-btn-sm layui-btn-danger" lay-submit lay-filter="search"
+                        style="margin-left: 15px"><i class="layui-icon">&#xe615;</i>Search
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div style="display: table-cell">
+        <div style="display: table">
+            <!--刷新-->
+            <div style="display: table-cell;">
+                <button id="refresh" class="layui-btn layui-btn-normal layui-btn-sm" style="margin-left: 15px">
+                    <i class="layui-icon">&#xe669;</i> Refresh
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="margin: 10px 0 10px 1%;width: 99%">
+    <p id="night">Night:</p>
+    <p id="day">Day:</p>
+</div>
+
+<script src="layui/layui.js"></script>
+<script src="js/libs/jquery-2.1.1.min.js"></script>
+<script src="utils/common.js"></script>
+
+<script>
+    layui.use(['table', 'layer', 'form', 'laypage'], function () {
+        var form = layui.form;
+
+        // 监听搜索按钮提交事件
+        form.on('submit(search)', function (data) {
+            var formData = data.field;
+            var mag = formData.mag;
+            $.ajax({
+                type: "get",
+                url: "/earthquake/countNight?mag="+mag,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (result){
+                    layer.msg(result.msg, {icon: 1, time: 1000});
+                    $("#night").html("Night:"+result.night+"%");
+                    $("#day").html("Day:"+result.day+"%");
+                },
+                error:function (msg){
+                    console.log(msg);
+                }
+            })
+            return false;
+        });
+    });
+
+</script>
+</body>
+</html>
